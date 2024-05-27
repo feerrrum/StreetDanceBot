@@ -30,4 +30,9 @@ public class UserSessionHandler implements UserSession{
     public void setAdmin() {
         this.isAdmin = true;
     }
+
+    @Override
+    public void delAdmin() {
+        this.isAdmin = false;
+    }
 }

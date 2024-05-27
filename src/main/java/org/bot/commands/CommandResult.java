@@ -11,6 +11,11 @@ public class CommandResult {
         this.message = message;
     }
 
+    public CommandResult(String message, Button buttons) {
+        this.message = message;
+        this.buttons = List.of(List.of(buttons));
+    }
+
     public CommandResult(String message, List<List<Button>> buttons) {
         this.message = message;
         this.buttons = buttons;

@@ -37,7 +37,10 @@ public class NotOnRecordCommand implements Command {
     @Override
     public List<CommandResult> execute(UserSession session, String text) throws SQLException {
         var result = new java.util.ArrayList<>(dbHandler.showCoaches().stream().map(CommandResult::new).toList());
-        var nicks = dbHandler.getNicks(session.getId()).stream().map(n -> List.of(new Button(n, n))).toList();
+        var nicks = dbHandler
+                .getNicks(session.getId())
+                .stream().map(n -> List.of(new Button(n, n)))
+                .toList();
         result.add(new CommandResult("К кому хотите записаться?", nicks));
 
         session.setState(UserState.USR_ADD_COACH);

@@ -1,8 +1,7 @@
 package org.bot;
 
 import org.bot.commands.CommandHandler;
-import org.bot.commands.admin.AdminStartCommand;
-import org.bot.commands.admin.ContinueAsAdminCommand;
+import org.bot.commands.admin.*;
 import org.bot.commands.user.*;
 import org.bot.telegram.StreetDanceBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -23,21 +22,33 @@ public class StreetDanceBotApplication {
     var bot = new StreetDanceBot(token, name);
 
     CommandHandler textHandler = new CommandHandler();
+
     textHandler.addCommand(new AdminStartCommand());
     textHandler.addCommand(new NotOnRecordCommand());
+    textHandler.addCommand(new AddAdminCommand());
+
     bot.setTextHandler(textHandler);
 
     CommandHandler buttonHandler = new CommandHandler();
+
     buttonHandler.addCommand(new AdminStartCommand());
     buttonHandler.addCommand(new NotOnRecordCommand());
-    buttonHandler.addCommand(new ContinueAsAdminCommand());
-    buttonHandler.addCommand(new BackToMenuCommand());
+
+    buttonHandler.addCommand(new AdminMenuCommand());
+    buttonHandler.addCommand(new EditAdminsCommand());
+    buttonHandler.addCommand(new ShowAdminsCommand());
+    buttonHandler.addCommand(new AskForAdminsContactCommand());
+    buttonHandler.addCommand(new ShowAdminsForDeletionCommand());
+    buttonHandler.addCommand(new DeleteAdminsCommand());
+
+    buttonHandler.addCommand(new UserMenuCommand());
     buttonHandler.addCommand(new ShowScheduleCommand());
     buttonHandler.addCommand(new EditCommand());
     buttonHandler.addCommand(new ShowCoachesForAdditionCommand());
     buttonHandler.addCommand(new ShowCoachesForDeletionCommand());
     buttonHandler.addCommand(new AddCoachCommand());
     buttonHandler.addCommand(new DeleteCoachCommand());
+
     bot.setButtonHandler(buttonHandler);
 
     telegramBotsApi.registerBot(bot);

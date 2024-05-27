@@ -25,8 +25,6 @@ public class AdminStartCommand implements Command {
         try {
             if (dbHandler.isAdmin(session.getId())) {
                 session.setAdmin();
-                ButtonHelper.userMenuButtons.add(
-                        List.of(new Button("Продолжить как админ", "ContinueAsAdmin")));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

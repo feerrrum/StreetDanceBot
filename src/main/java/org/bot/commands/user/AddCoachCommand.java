@@ -1,5 +1,6 @@
 package org.bot.commands.user;
 
+import org.bot.commands.Button;
 import org.bot.commands.ButtonHelper;
 import org.bot.commands.Command;
 import org.bot.commands.CommandResult;
@@ -9,6 +10,7 @@ import org.bot.users.UserState;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddCoachCommand implements Command {
@@ -26,8 +28,11 @@ public class AddCoachCommand implements Command {
     public List<CommandResult> execute(UserSession session, String text) throws SQLException {
         dbHandler.userAddCoach(session.getId(), text);
         session.setState(UserState.USER);
+        var buttons = new ArrayList<>(ButtonHelper.userMenuButtons);
+        if (session.isAdmin()) buttons.add(List.of(new Button("Продолжить как админ", "AdminMenu")));
+
         return List.of(new CommandResult(
                 "Поздравляю! \nВы записаны :) \n\nЧто хотите сделать дальше?",
-                ButtonHelper.userMenuButtons));
+                buttons));
     }
 }

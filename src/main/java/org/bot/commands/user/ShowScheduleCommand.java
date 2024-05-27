@@ -24,8 +24,8 @@ public class ShowScheduleCommand implements Command {
 
     @Override
     public List<CommandResult> execute(UserSession session, String text) throws SQLException {
-        return List.of(new CommandResult(
-                dbHandler.getSchedule(session.getId()),
-                List.of(List.of(new Button("Назад", "UserMenu")))));
+        return List.of(
+                new CommandResult(dbHandler.getSchedule(session.getId()),
+                new Button("Назад", "UserMenu")));
     }
 }

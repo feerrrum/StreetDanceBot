@@ -9,15 +9,15 @@ import org.bot.users.UserState;
 import java.sql.SQLException;
 import java.util.List;
 
-public class ContinueAsAdminCommand implements Command {
+public class AdminMenuCommand implements Command {
     @Override
     public boolean canBeApply(UserSession session, String text) {
-        return "ContinueAsAdmin".equals(text) && session.isAdmin();
+        return "AdminMenu".equals(text) && session.isAdmin();
     }
 
     @Override
     public List<CommandResult> execute(UserSession session, String text) throws SQLException {
         session.setState(UserState.ADMIN);
-        return List.of(new CommandResult("Что хотите сдеать?", ButtonHelper.adminMenuButtons));
+        return List.of(new CommandResult("Что хотите сделать?", ButtonHelper.adminMenuButtons));
     }
 }

@@ -19,15 +19,15 @@ public class ShowAdminsForDeletionCommand implements Command {
 
     @Override
     public boolean canBeApply(UserSession session, String text) {
-        return "AdminAddAdmins".equals(text) && session.isAdmin();
+        return "AdminDeleteAdmins".equals(text) && session.isAdmin();
     }
 
     @Override
     public List<CommandResult> execute(UserSession session, String text) throws SQLException {
-        var admins = new java.util.ArrayList<>(
-                dbHandler.getAdminsForDeletion(session.getId()).stream()
-                        .map(n -> List.of(new Button(n.get(0) + " " + n.get(1), n.get(1))))
-                        .toList());
+        var admins = new java.util.ArrayList<>(dbHandler
+                .getAdminsForDeletion(session.getId())
+                .stream().map(adm -> List.of(new Button(adm.get(1) + " " + adm.get(2), adm.get(0))))
+                .toList());
         admins.add(List.of(new Button("Назад", "AdminEditAdmins")));
 
         session.setState(UserState.DELETE_ADMIN);

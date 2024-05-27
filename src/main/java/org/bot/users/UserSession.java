@@ -8,4 +8,5 @@ public interface UserSession {
 
     void setState(UserState state);
     void setAdmin();
+    void delAdmin();
 }

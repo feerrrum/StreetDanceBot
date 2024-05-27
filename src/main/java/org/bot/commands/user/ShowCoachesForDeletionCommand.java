@@ -24,9 +24,11 @@ public class ShowCoachesForDeletionCommand implements Command {
 
     @Override
     public List<CommandResult> execute(UserSession session, String text) throws SQLException {
-        var nicks = new java.util.ArrayList<>(dbHandler.getUsersCoaches(session.getId())
-                .stream().map(n -> List.of(new Button(n, n))).toList());
-        nicks.add(List.of(new Button("Назад", "UserEdit")));
+        var nicks = new java.util.ArrayList<>(dbHandler
+                .getUsersCoaches(session.getId())
+                .stream().map(n -> List.of(new Button(n, n)))
+                .toList());
+            nicks.add(List.of(new Button("Назад", "UserEdit")));
 
         session.setState(UserState.USR_DELETE_COACH);
 

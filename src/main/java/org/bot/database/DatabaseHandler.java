@@ -91,18 +91,28 @@ public class DatabaseHandler {
     public String showAdmins() throws SQLException {
         return getAdmins().stream()
                 .map(adm -> String.format(
-                        "tg_id: %s name: %s phone_number: %s access_lvl: %d\n",
+                        "tg_id: %s\nname: %s\nphone_number: %s\naccess_lvl: %d",
                         adm.id(), adm.name(), adm.phoneNumber(), adm.accessLvl()))
-                .reduce((acc, cur) -> acc + cur)
-                .orElse("Вы никого не можете удалить");
+                .reduce((acc, cur) -> acc + "\n\n" +  cur)
+                .orElse("Пусто");
     }
 
     public List<List<String>> getAdminsForDeletion(String admId) throws SQLException {
         int admLvl = getLevel(admId);
         return getAdmins().stream()
                 .filter(adm -> adm.accessLvl() > admLvl)
-                .map(adm -> List.of(adm.name(), adm.phoneNumber()))
+                .map(adm -> List.of(adm.id(), adm.name(), adm.phoneNumber()))
                 .toList();
+    }
+
+    public void addAdmin(String admId, String newAdmId, String name, String phoneNumber) throws SQLException {
+        stmt.executeUpdate(String.format(
+                "INSERT INTO admins (tg_id, admin_name, phone_number, access_lvl) VALUES (\"%s\", \"%s\", \"%s\", %d)",
+                newAdmId, name, phoneNumber, getLevel(admId) + 1));
+    }
+
+    public void deleteAdmin(String admId) throws SQLException {
+        stmt.executeUpdate("DELETE FROM admins WHERE tg_id=" + admId);
     }
 
     private List<Coach> getCoaches() throws SQLException {
@@ -131,7 +141,7 @@ public class DatabaseHandler {
     }
 
     private int getLevel(String admId) throws SQLException {
-        var exist = stmt.executeQuery("SELECT EXISTS (SELECT * FROM admins WHERE tg_id=" + admId + ")");
+        var exist = stmt.executeQuery("SELECT * FROM admins WHERE tg_id=" + admId);
         exist.next();
         return exist.getInt("access_lvl");
     }

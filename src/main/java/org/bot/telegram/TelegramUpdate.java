@@ -17,8 +17,8 @@ public class TelegramUpdate {
                 this.tgType = TelegramType.Text;
 
                 var contact = message.getContact();
-                this.data = String.format("%d %s %s",
-                        contact.getUserId(), contact.getPhoneNumber(), contact.getFirstName());
+                this.data = String.format("%d;%s;%s",
+                        contact.getUserId(), contact.getFirstName(), contact.getPhoneNumber());
             }
             else if (message.hasText()) {
                 this.tgType = TelegramType.Text;

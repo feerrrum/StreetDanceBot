@@ -1,6 +1,8 @@
 package org.bot;
 
 import org.bot.commands.CommandHandler;
+import org.bot.commands.admin.AdminStartCommand;
+import org.bot.commands.admin.ContinueAsAdminCommand;
 import org.bot.commands.user.*;
 import org.bot.telegram.StreetDanceBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -21,10 +23,14 @@ public class StreetDanceBotApplication {
     var bot = new StreetDanceBot(token, name);
 
     CommandHandler textHandler = new CommandHandler();
-    textHandler.addCommand(new notOnRecordCommand());
+    textHandler.addCommand(new AdminStartCommand());
+    textHandler.addCommand(new NotOnRecordCommand());
     bot.setTextHandler(textHandler);
 
     CommandHandler buttonHandler = new CommandHandler();
+    buttonHandler.addCommand(new AdminStartCommand());
+    buttonHandler.addCommand(new NotOnRecordCommand());
+    buttonHandler.addCommand(new ContinueAsAdminCommand());
     buttonHandler.addCommand(new BackToMenuCommand());
     buttonHandler.addCommand(new ShowScheduleCommand());
     buttonHandler.addCommand(new EditCommand());

@@ -57,10 +57,10 @@ public class DatabaseHandler {
         stmt.executeUpdate(String.format("DELETE FROM users WHERE tg_id=\"%s\" AND coach_nick=\"%s\"", userId, coachNick));
     }
 
-    public List<String> getCards() throws SQLException {
+    public List<String> showCoaches() throws SQLException {
         return getCoaches()
                 .stream()
-                .map(c -> String.format("%s\n\nРасписание:\n\n%s\n\n%s", c.nick(), c.schedule(), c.info()))
+                .map(c -> String.format("%s\n\nРасписание:\n\n%s\n\nИнфа:\n\n%s", c.nick(), c.schedule(), c.info()))
                 .toList();
     }
 
@@ -75,7 +75,7 @@ public class DatabaseHandler {
         return getCoaches().stream()
                 .filter(c -> usersCoaches.contains(c.nick()))
                 .map(c -> c.nick() + ":\n" + c.schedule())
-                .reduce((x,y) -> x + "\n\n" + y)
+                .reduce((acc, cur) -> acc + "\n\n" + cur)
                 .orElse("Вы ни к кому не записаны\n");
     }
 
@@ -88,6 +88,23 @@ public class DatabaseHandler {
         return coaches;
     }
 
+    public String showAdmins() throws SQLException {
+        return getAdmins().stream()
+                .map(adm -> String.format(
+                        "tg_id: %s name: %s phone_number: %s access_lvl: %d\n",
+                        adm.id(), adm.name(), adm.phoneNumber(), adm.accessLvl()))
+                .reduce((acc, cur) -> acc + cur)
+                .orElse("Вы никого не можете удалить");
+    }
+
+    public List<List<String>> getAdminsForDeletion(String admId) throws SQLException {
+        int admLvl = getLevel(admId);
+        return getAdmins().stream()
+                .filter(adm -> adm.accessLvl() > admLvl)
+                .map(adm -> List.of(adm.name(), adm.phoneNumber()))
+                .toList();
+    }
+
     private List<Coach> getCoaches() throws SQLException {
         List<Coach> coaches = new ArrayList<>();
         var rs = stmt.executeQuery("SELECT * FROM coaches");
@@ -98,5 +115,24 @@ public class DatabaseHandler {
                     rs.getString("info")));
         }
         return coaches;
+    }
+
+    private List<Admin> getAdmins() throws SQLException {
+        List<Admin> admins = new ArrayList<>();
+        var rs = stmt.executeQuery("SELECT * FROM admins");
+        while (rs.next()) {
+            admins.add(new Admin(
+                    rs.getString("tg_id"),
+                    rs.getString("admin_name"),
+                    rs.getString("phone_number"),
+                    rs.getInt("access_lvl")));
+        }
+        return admins;
+    }
+
+    private int getLevel(String admId) throws SQLException {
+        var exist = stmt.executeQuery("SELECT EXISTS (SELECT * FROM admins WHERE tg_id=" + admId + ")");
+        exist.next();
+        return exist.getInt("access_lvl");
     }
 }

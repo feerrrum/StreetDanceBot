@@ -11,7 +11,7 @@ import java.util.Map;
 public class CommandHandler {
     private final List<Command> commands = new ArrayList<>();
     private static final Map<String, List<CommandResult>> prevCommand = new HashMap<>();
-    private final CommandResult error = new CommandResult("Я не понимаю :(");
+
     public void addCommand(Command command) {
         commands.add(command);
     }

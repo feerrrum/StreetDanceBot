@@ -36,7 +36,8 @@ public class StreetDanceBot extends TelegramLongPollingBot {
         }
         if (TelegramType.CallbackQuery.equals(tgUpdate.getTgType())) {
             var result = buttonHandler.processCommand(session, tgUpdate.getData());
-            result.forEach(r -> edit(r, chatId, tgUpdate.getMessageId()));
+            if (result.size() > 1) result.forEach(r -> send(r, chatId));
+            else result.forEach(r -> edit(r, chatId, tgUpdate.getMessageId()));
         }
     }
 

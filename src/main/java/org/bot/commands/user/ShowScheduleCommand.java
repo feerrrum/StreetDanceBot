@@ -1,5 +1,6 @@
 package org.bot.commands.user;
 
+import org.bot.commands.Button;
 import org.bot.commands.ButtonHelper;
 import org.bot.commands.Command;
 import org.bot.commands.CommandResult;
@@ -24,7 +25,7 @@ public class ShowScheduleCommand implements Command {
     @Override
     public List<CommandResult> execute(UserSession session, String text) throws SQLException {
         return List.of(new CommandResult(
-                dbHandler.getSchedule(session.getId()) + "\n\nЧто хотите сделать дальше?",
-                ButtonHelper.userMenuButtons));
+                dbHandler.getSchedule(session.getId()),
+                List.of(List.of(new Button("Назад", "UserMenu")))));
     }
 }

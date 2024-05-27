@@ -74,8 +74,8 @@ public class StreetDanceBot extends TelegramLongPollingBot {
         for (List<Button> row : result.getButtons()) {
             List<InlineKeyboardButton> rowInline = new ArrayList<>();
             for (Button button : row) {
-                InlineKeyboardButton inlineButton = new InlineKeyboardButton(button.getText());
-                inlineButton.setCallbackData(button.getCallback());
+                InlineKeyboardButton inlineButton = new InlineKeyboardButton(button.text());
+                inlineButton.setCallbackData(button.callback());
                 rowInline.add(inlineButton);
             }
             rowsInline.add(rowInline);

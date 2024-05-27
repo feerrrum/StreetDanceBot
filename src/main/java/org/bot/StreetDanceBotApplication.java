@@ -1,7 +1,7 @@
 package org.bot;
 
 import org.bot.commands.CommandHandler;
-import org.bot.commands.user.notOnRecordCommand;
+import org.bot.commands.user.*;
 import org.bot.telegram.StreetDanceBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -23,6 +23,16 @@ public class StreetDanceBotApplication {
     CommandHandler textHandler = new CommandHandler();
     textHandler.addCommand(new notOnRecordCommand());
     bot.setTextHandler(textHandler);
+
+    CommandHandler buttonHandler = new CommandHandler();
+    buttonHandler.addCommand(new BackToMenuCommand());
+    buttonHandler.addCommand(new ShowScheduleCommand());
+    buttonHandler.addCommand(new EditCommand());
+    buttonHandler.addCommand(new ShowCoachesForAdditionCommand());
+    buttonHandler.addCommand(new ShowCoachesForDeletionCommand());
+    buttonHandler.addCommand(new AddCoachCommand());
+    buttonHandler.addCommand(new DeleteCoachCommand());
+    bot.setButtonHandler(buttonHandler);
 
     telegramBotsApi.registerBot(bot);
     }

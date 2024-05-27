@@ -4,11 +4,14 @@ import org.bot.users.UserSession;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CommandHandler {
     private final List<Command> commands = new ArrayList<>();
-    private final List<CommandResult> error = List.of(new CommandResult("Я не понимаю :("));
+    private static final Map<String, List<CommandResult>> prevCommand = new HashMap<>();
+    private final CommandResult error = new CommandResult("Я не понимаю :(");
     public void addCommand(Command command) {
         commands.add(command);
     }
@@ -16,11 +19,14 @@ public class CommandHandler {
         var command = commands.stream().filter(c -> c.canBeApply(session, text)).findFirst();
         var result = command.map(c -> {
             try {
-                return c.execute(session, text);
+                var res = c.execute(session, text);
+                prevCommand.put(session.getId(), res);
+                return res;
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
-        return result.orElse(error);
+
+        return result.orElse(prevCommand.get(session.getId()));
     }
 }

@@ -9,17 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHandler {
-    private static List<List<String>> coaches = null;
-
     private final Statement stmt;
-    private static DatabaseHandler instance = null;
+    private static DatabaseHandler instance;
 
     private DatabaseHandler() throws IOException, SQLException {
         var data = Files.readAllLines(new File("src\\main\\resources\\dbData").toPath());
         var url = data.get(0);
         var user = data.get(1);
         var password = data.get(2);
-
 
         Connection conn = DriverManager.getConnection(url, user, password);
         this.stmt = conn.createStatement();
@@ -33,6 +30,13 @@ public class DatabaseHandler {
         return instance;
     }
 
+    public boolean isOnRecord(String id) throws SQLException {
+        var exist = stmt.executeQuery("SELECT EXISTS" +
+                "(SELECT * FROM users WHERE tg_id=" + id + ")");
+        exist.next();
+        return exist.getInt(1) != 0;
+    }
+
     public boolean isAdmin(String id)  throws SQLException {
         var exist = stmt.executeQuery("SELECT EXISTS" +
                 "(SELECT * FROM admins WHERE tg_id=" + id + ")");
@@ -40,94 +44,59 @@ public class DatabaseHandler {
         return exist.getInt(1) != 0;
     }
 
-    public void addAdmin(String admId, String phone_number, String newId) throws SQLException {
-        stmt.executeUpdate("INSERT INTO admins (tg_id, phone_number, access_lvl) VALUES ("
-                + newId + ", " + phone_number +", " + (this.getLevel(admId) + 1) + ")");
+    public void userAddCoach(String userId, String coachNick) throws SQLException {
+        if (getUsersCoaches(userId).contains(coachNick)) return;
+
+        stmt.executeUpdate(
+                String.format("INSERT INTO users (tg_id, coach_nick) VALUES (\"%s\", \"%s\")", userId, coachNick));
     }
 
-    public boolean deleteAdmin(String id, String delId) throws SQLException {
-        if (!this.isAdmin(delId)) {
-            return false;
-        }
-        stmt.executeUpdate("DELETE FROM admins WHERE tg_id=" + delId);
-        return true;
+    public void userDeleteCoach(String userId, String coachNick) throws SQLException {
+        if (!getUsersCoaches(userId).contains(coachNick)) return;
+
+        stmt.executeUpdate(String.format("DELETE FROM users WHERE tg_id=\"%s\" AND coach_nick=\"%s\"", userId, coachNick));
     }
 
-    private int getLevel(String admId) throws SQLException {
-        var exist = stmt.executeQuery("SELECT EXISTS" +
-                "(SELECT * FROM admins WHERE tg_id=" + admId + ")");
-        exist.next();
-        return exist.getInt(1);
-    }
-    public boolean isOnRecord(String id) throws SQLException {
-        var exist = stmt.executeQuery("SELECT EXISTS" +
-                "(SELECT * FROM tg_ids WHERE td_id=" + id + ")");
-        exist.next();
-        return exist.getInt(1) != 0;
+    public List<String> getCards() throws SQLException {
+        return getCoaches()
+                .stream()
+                .map(c -> String.format("%s\n\nРасписание:\n\n%s\n\n%s", c.nick(), c.schedule(), c.info()))
+                .toList();
     }
 
-    public boolean hasThatCoach(String userId, String coachId) throws SQLException {
-        var exist = stmt.executeQuery("SELECT EXISTS" +
-                "(SELECT * FROM tg_ids WHERE td_id=" + userId + " AND coach_id=" + coachId + ")");
-        exist.next();
-        return exist.getInt(1) != 0;
+    public List<String> getNicks(String id) throws SQLException {
+        var usersCoaches = getUsersCoaches(id);
+        return getCoaches().stream().map(Coach::nick)
+                .filter(nick -> !usersCoaches.contains(nick)).toList();
     }
 
-    public void addCoach(String userId, String coachId) throws SQLException {
-        stmt.executeUpdate("INSERT INTO tg_ids (td_id, coach_id) VALUES (" + userId + "," +  coachId + ")");
+    public String getSchedule(String id) throws SQLException {
+        var usersCoaches = getUsersCoaches(id);
+        return getCoaches().stream()
+                .filter(c -> usersCoaches.contains(c.nick()))
+                .map(c -> c.nick() + ":\n" + c.schedule())
+                .reduce((x,y) -> x + "\n\n" + y)
+                .orElse("Вы ни к кому не записаны\n");
     }
 
-    public void deleteCoach(String userId, String coachId) throws SQLException {
-
-        stmt.executeUpdate("DELETE FROM tg_ids WHERE td_id=" + userId + " AND coach_id=" + coachId);
-    }
-
-    private List<List<String>> getCoaches() throws SQLException {
-        if (coaches == null) {
-            coaches = new ArrayList<>();
-            var rs = stmt.executeQuery("SELECT * FROM coaches");
-            while (rs.next()) {
-                List<String> coach = List.of(
-                        rs.getString("nick"),
-                        rs.getString("info"),
-                        rs.getString("sched"));
-
-                coaches.add(coach);
-            }
+    public List<String> getUsersCoaches(String userId) throws SQLException {
+        List<String> coaches = new ArrayList<>();
+        var rs = stmt.executeQuery(String.format("SELECT * FROM users WHERE tg_id=\"%s\"", userId));
+        while (rs.next()) {
+            coaches.add(rs.getString("coach_nick"));
         }
         return coaches;
     }
 
-    public List<String> getCards() throws SQLException {
-        List<String> cards = new ArrayList<>();
-        int i = 1;
-        for (List<String> couch : getCoaches()) {
-            cards.add(i +". " + couch.get(0) + "\n\nИнфа:\n\n" +
-                    couch.get(1) + "\n\nРасписание:\n\n" +
-                    couch.get(2));
-            i++;
-        }
-        return cards;
-    }
-
-    public List<String> getNicks() throws SQLException {
-        List<String> nicks = new ArrayList<>();
-        int i = 1;
-        for (List<String> couch : getCoaches()) {
-            nicks.add(i + ". " + couch.get(0));
-            i++;
-        }
-        return nicks;
-    }
-
-    public List<String> getSchedule(String userId) throws SQLException {
-        List<String> schedule = new ArrayList<>();
-        var rs = stmt.executeQuery("SELECT * FROM tg_ids WHERE td_id=" + userId);
-        getCoaches();
+    private List<Coach> getCoaches() throws SQLException {
+        List<Coach> coaches = new ArrayList<>();
+        var rs = stmt.executeQuery("SELECT * FROM coaches");
         while (rs.next()) {
-            var index = Integer.parseInt(rs.getString("coach_id")) - 1;
-            schedule.add(coaches.get(index).get(0) + ":\n\n" + coaches.get(index).get(2));
+            coaches.add(new Coach(
+                    rs.getString("nick"),
+                    rs.getString("sched"),
+                    rs.getString("info")));
         }
-        return schedule;
+        return coaches;
     }
 }

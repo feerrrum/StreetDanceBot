@@ -1,4 +1,4 @@
-package org.bot.commands.user;
+package org.bot.commands.user.editCoaches;
 
 import org.bot.commands.ButtonHelper;
 import org.bot.commands.Command;
@@ -11,21 +11,20 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public class DeleteCoachCommand implements Command {
+public class EditCommand implements Command {
     DatabaseHandler dbHandler = DatabaseHandler.getInstance();
 
-    public DeleteCoachCommand() throws SQLException, IOException {
+    public EditCommand() throws SQLException, IOException {
     }
 
     @Override
     public boolean canBeApply(UserSession session, String text) {
-        return UserState.USR_DELETE_COACH.equals(session.getState());
+        return "UserEdit".equals(text);
     }
 
     @Override
     public List<CommandResult> execute(UserSession session, String text) throws SQLException {
-        dbHandler.userDeleteCoach(session.getId(), text);
         session.setState(UserState.USER);
-        return List.of(new CommandResult("Успешно", ButtonHelper.userEditButtons));
+        return List.of(new CommandResult("Что хотите сделать?", ButtonHelper.userEditButtons));
     }
 }

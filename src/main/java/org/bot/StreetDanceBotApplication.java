@@ -2,7 +2,13 @@ package org.bot;
 
 import org.bot.commands.CommandHandler;
 import org.bot.commands.admin.*;
+import org.bot.commands.admin.editAdmins.*;
+import org.bot.commands.admin.messaging.ConfirmMessageCommand;
+import org.bot.commands.admin.messaging.SelectMessageCommand;
+import org.bot.commands.admin.messaging.SelectReceiversCommand;
+import org.bot.commands.admin.messaging.SendMessagesCommand;
 import org.bot.commands.user.*;
+import org.bot.commands.user.editCoaches.*;
 import org.bot.telegram.StreetDanceBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -26,6 +32,7 @@ public class StreetDanceBotApplication {
     textHandler.addCommand(new AdminStartCommand());
     textHandler.addCommand(new NotOnRecordCommand());
     textHandler.addCommand(new AddAdminCommand());
+    textHandler.addCommand(new ConfirmMessageCommand());
 
     bot.setTextHandler(textHandler);
 
@@ -40,6 +47,9 @@ public class StreetDanceBotApplication {
     buttonHandler.addCommand(new AskForAdminsContactCommand());
     buttonHandler.addCommand(new ShowAdminsForDeletionCommand());
     buttonHandler.addCommand(new DeleteAdminsCommand());
+    buttonHandler.addCommand(new SelectReceiversCommand());
+    buttonHandler.addCommand(new SelectMessageCommand());
+    buttonHandler.addCommand(new SendMessagesCommand());
 
     buttonHandler.addCommand(new UserMenuCommand());
     buttonHandler.addCommand(new ShowScheduleCommand());

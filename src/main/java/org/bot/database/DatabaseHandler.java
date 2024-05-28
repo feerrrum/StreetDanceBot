@@ -64,10 +64,8 @@ public class DatabaseHandler {
                 .toList();
     }
 
-    public List<String> getNicks(String id) throws SQLException {
-        var usersCoaches = getUsersCoaches(id);
-        return getCoaches().stream().map(Coach::nick)
-                .filter(nick -> !usersCoaches.contains(nick)).toList();
+    public List<String> getNicks() throws SQLException {
+        return getCoaches().stream().map(Coach::nick).toList();
     }
 
     public String getSchedule(String id) throws SQLException {
@@ -113,6 +111,24 @@ public class DatabaseHandler {
 
     public void deleteAdmin(String admId) throws SQLException {
         stmt.executeUpdate("DELETE FROM admins WHERE tg_id=" + admId);
+    }
+
+    public List<String> getUsers() throws SQLException {
+        List<String> users = new ArrayList<>();
+        var rs = stmt.executeQuery("SELECT * FROM users");
+        while (rs.next()) {
+            users.add(rs.getString("tg_id"));
+        }
+        return users.stream().distinct().toList();
+    }
+    public List<String> getCoachesUsers(String nick) throws SQLException {
+        List<String> users = new ArrayList<>();
+        var rs = stmt.executeQuery(String.format("SELECT * FROM users WHERE coach_nick=\"%s\"", nick));
+        while (rs.next()) {
+            users.add(rs.getString("tg_id"));
+        }
+        return users;
+
     }
 
     private List<Coach> getCoaches() throws SQLException {

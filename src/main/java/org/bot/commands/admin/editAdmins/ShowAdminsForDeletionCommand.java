@@ -1,4 +1,4 @@
-package org.bot.commands.admin;
+package org.bot.commands.admin.editAdmins;
 
 import org.bot.commands.Button;
 import org.bot.commands.Command;

@@ -28,8 +28,9 @@ public class CommandResult {
         return buttons;
     }
 
-    public void setChatId(String chatId) {
+    public CommandResult setChatId(String chatId) {
         this.chatId = chatId;
+        return this;
     }
     public String getChatId() {
         return this.chatId;

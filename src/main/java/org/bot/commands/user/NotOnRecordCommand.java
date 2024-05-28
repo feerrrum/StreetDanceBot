@@ -1,7 +1,6 @@
 package org.bot.commands.user;
 
 import org.bot.commands.Button;
-import org.bot.commands.ButtonHelper;
 import org.bot.commands.Command;
 import org.bot.commands.CommandResult;
 import org.bot.database.DatabaseHandler;
@@ -37,11 +36,11 @@ public class NotOnRecordCommand implements Command {
     @Override
     public List<CommandResult> execute(UserSession session, String text) throws SQLException {
         var result = new java.util.ArrayList<>(dbHandler.showCoaches().stream().map(CommandResult::new).toList());
-        var nicks = dbHandler
-                .getNicks(session.getId())
+        var coaches = dbHandler
+                .getNicks()
                 .stream().map(n -> List.of(new Button(n, n)))
                 .toList();
-        result.add(new CommandResult("К кому хотите записаться?", nicks));
+        result.add(new CommandResult("К кому хотите записаться?", coaches));
 
         session.setState(UserState.USR_ADD_COACH);
 

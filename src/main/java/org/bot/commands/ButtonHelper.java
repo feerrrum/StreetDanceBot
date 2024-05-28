@@ -17,7 +17,7 @@ public class ButtonHelper {
             List.of(new Button("Пользователь", "UserMenu")));
     public static List<List<Button>> adminMenuButtons = List.of(
             List.of(
-                    new Button("Рассылка", "AdminMenuToMailing"),
+                    new Button("Рассылка", "AdminSelectReceivers"),
                     new Button("Тренеры", "AdminEditCoaches"),
                     new Button("Админы", "AdminEditAdmins")),
             List.of(new Button("Продолжить как пользователь", "UserMenu")));

@@ -1,4 +1,4 @@
-package org.bot.commands.user;
+package org.bot.commands.user.editCoaches;
 
 import org.bot.commands.Button;
 import org.bot.commands.Command;
@@ -24,14 +24,16 @@ public class ShowCoachesForAdditionCommand implements Command {
 
     @Override
     public List<CommandResult> execute(UserSession session, String text) throws SQLException {
-        var nicks = new java.util.ArrayList<>(dbHandler
-                .getNicks(session.getId())
-                .stream().map(n -> List.of(new Button(n, n)))
+        var usersCoaches = dbHandler.getUsersCoaches(session.getId());
+        var buttons = new java.util.ArrayList<>(dbHandler
+                .getNicks().stream()
+                .filter(coach -> !usersCoaches.contains(coach))
+                .map(coach -> List.of(new Button(coach, coach)))
                 .toList());
-        nicks.add(List.of(new Button("Назад", "UserEdit")));
+        buttons.add(List.of(new Button("Назад", "UserEdit")));
 
         session.setState(UserState.USR_ADD_COACH);
 
-        return List.of(new CommandResult("К кому хотите записаться?", nicks));
+        return List.of(new CommandResult("К кому хотите записаться?", buttons));
     }
 }

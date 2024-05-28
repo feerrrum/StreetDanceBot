@@ -1,4 +1,4 @@
-package org.bot.commands.user;
+package org.bot.commands.user.editCoaches;
 
 import org.bot.commands.Button;
 import org.bot.commands.ButtonHelper;

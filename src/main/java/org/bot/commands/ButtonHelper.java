@@ -21,6 +21,13 @@ public class ButtonHelper {
                     new Button("Тренеры", "AdminEditCoaches"),
                     new Button("Админы", "AdminEditAdmins")),
             List.of(new Button("Продолжить как пользователь", "UserMenu")));
+    public static List<List<Button>> adminEditCoachesButtons = List.of(
+            List.of(new Button("Посмотреть", "AdminShowCoaches")),
+            List.of(new Button("Изменить расписание", "AdminChangeSchedule")),
+            List.of(
+                    new Button("Добавить", "AdminAddCoach"),
+                    new Button("Удалить", "AdminDeleteCoach")),
+            List.of(new Button("Назад", "AdminMenu")));
     public static List<List<Button>> adminEditAdminsButtons = List.of(
             List.of(
                     new Button("Посмотреть", "AdminShowAdmins"),

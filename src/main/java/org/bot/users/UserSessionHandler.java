@@ -7,6 +7,9 @@ public class UserSessionHandler implements UserSession{
     private boolean isAdmin = false;
     private String receiversCoach;
     private String message;
+    private String changesCoach;
+    private String coachNick;
+    private String coachSchedule;
 
     UserSessionHandler(UserId id) {
         this.id = id;
@@ -35,17 +38,33 @@ public class UserSessionHandler implements UserSession{
     }
 
     @Override
+    public String getChangedCoach() {
+        return changesCoach;
+    }
+
+    @Override
+    public String getNick() {
+        return coachNick;
+    }
+
+    @Override
+    public String getSchedule() {
+        return coachSchedule;
+    }
+
+
+    @Override
     public void setState(UserState state) {
         this.state = state;
     }
     @Override
     public void setAdmin() {
-        this.isAdmin = true;
+        isAdmin = true;
     }
 
     @Override
     public void delAdmin() {
-        this.isAdmin = false;
+        isAdmin = false;
     }
 
     @Override
@@ -55,6 +74,21 @@ public class UserSessionHandler implements UserSession{
 
     @Override
     public void setReceiversCoach(String coach) {
-        this.receiversCoach = coach;
+        receiversCoach = coach;
+    }
+
+    @Override
+    public void setChangedCoach(String coach) {
+        changesCoach = coach;
+    }
+
+    @Override
+    public void setNick(String nick) {
+        coachNick = nick;
+    }
+
+    @Override
+    public void setSchedule(String schedule) {
+        coachSchedule = schedule;
     }
 }

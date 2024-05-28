@@ -131,6 +131,21 @@ public class DatabaseHandler {
 
     }
 
+    public void setNewScheduleForCoach(String nick, String schedule) throws SQLException {
+        stmt.executeUpdate(
+                String.format("UPDATE coaches SET sched = \"%s\" WHERE nick = \"%s\"", schedule, nick));
+    }
+
+    public void adminAddCoach(String nick, String schedule, String info) throws SQLException {
+        stmt.executeUpdate(String.format(
+                "INSERT INTO coaches (nick, sched, info) VALUES (\"%s\", \"%s\", \"%s\")",
+                nick, schedule, info));
+    }
+
+    public void adminDeleteCoach(String coachNick) throws SQLException {
+        stmt.executeUpdate(String.format("DELETE FROM coaches WHERE nick=\"%s\"", coachNick));
+    }
+
     private List<Coach> getCoaches() throws SQLException {
         List<Coach> coaches = new ArrayList<>();
         var rs = stmt.executeQuery("SELECT * FROM coaches");

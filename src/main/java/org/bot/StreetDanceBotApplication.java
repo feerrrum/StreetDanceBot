@@ -3,6 +3,11 @@ package org.bot;
 import org.bot.commands.CommandHandler;
 import org.bot.commands.admin.*;
 import org.bot.commands.admin.editAdmins.*;
+import org.bot.commands.admin.editCoaches.*;
+import org.bot.commands.admin.editCoaches.add.AddCoachInfoCommand;
+import org.bot.commands.admin.editCoaches.add.AddCoachNickCommand;
+import org.bot.commands.admin.editCoaches.add.AddCoachScheduleCommand;
+import org.bot.commands.admin.editCoaches.add.AskForNewCoachNickCommand;
 import org.bot.commands.admin.messaging.ConfirmMessageCommand;
 import org.bot.commands.admin.messaging.SelectMessageCommand;
 import org.bot.commands.admin.messaging.SelectReceiversCommand;
@@ -33,6 +38,10 @@ public class StreetDanceBotApplication {
     textHandler.addCommand(new NotOnRecordCommand());
     textHandler.addCommand(new AddAdminCommand());
     textHandler.addCommand(new ConfirmMessageCommand());
+    textHandler.addCommand(new UpdateScheduleCommand());
+    textHandler.addCommand(new AddCoachNickCommand());
+    textHandler.addCommand(new AddCoachScheduleCommand());
+    textHandler.addCommand(new AddCoachInfoCommand());
 
     bot.setTextHandler(textHandler);
 
@@ -42,14 +51,25 @@ public class StreetDanceBotApplication {
     buttonHandler.addCommand(new NotOnRecordCommand());
 
     buttonHandler.addCommand(new AdminMenuCommand());
+
     buttonHandler.addCommand(new EditAdminsCommand());
     buttonHandler.addCommand(new ShowAdminsCommand());
     buttonHandler.addCommand(new AskForAdminsContactCommand());
     buttonHandler.addCommand(new ShowAdminsForDeletionCommand());
     buttonHandler.addCommand(new DeleteAdminsCommand());
+
     buttonHandler.addCommand(new SelectReceiversCommand());
     buttonHandler.addCommand(new SelectMessageCommand());
     buttonHandler.addCommand(new SendMessagesCommand());
+
+    buttonHandler.addCommand(new EditCoachesCommand());
+    buttonHandler.addCommand(new ShowCoachesCommand());
+    buttonHandler.addCommand(new ShowCoachesForScheduleChangeCommand());
+    buttonHandler.addCommand(new ChangeScheduleCommand());
+    buttonHandler.addCommand(new AskForNewCoachNickCommand());
+    buttonHandler.addCommand(new AddCoachNickCommand());
+    buttonHandler.addCommand(new ShowCoachesForDeletionAdminCommand());
+    buttonHandler.addCommand(new AdminDeleteCoachCommand());
 
     buttonHandler.addCommand(new UserMenuCommand());
     buttonHandler.addCommand(new ShowScheduleCommand());
